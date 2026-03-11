@@ -1,59 +1,154 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Système d'Authentification & Gestion de Compte - API Laravel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Ce projet est une API backend robuste développée en Laravel. Elle offre
+un système complet de gestion de l'identité utilisateur, incluant la
+création de compte, l'authentification sécurisée par token, ainsi que la
+consultation et la modification des données de profil.
 
-## About Laravel
+L'API est conçue pour être consommée par n'importe quel client
+(frontend, application mobile) et est entièrement testable via Postman.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🛠 Prérequis
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Assurez-vous d'avoir les éléments suivants installés sur votre machine
+: - **PHP** (v8.1 ou supérieure) - **Composer** - **MySQL** ou
+**MariaDB** - **Postman** (pour explorer et tester l'API) -
+*(Optionnel)* **Docker** et **Docker Compose** (si vous utilisez Laravel
+Sail)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Installation et Configuration
 
-## Learning Laravel
+### 1. Cloner le dépôt
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+``` bash
+git clone https://github.com/Oussama-Ait-Youss/System-d-Athentification-Gestion-de-Compte---API-
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 2. Installer les dépendances
 
-## Laravel Sponsors
+``` bash
+composer install
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 3. Configuration de l'environnement
 
-### Premium Partners
+Copiez le fichier d'exemple pour créer votre propre fichier de
+configuration :
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+``` bash
+cp .env.example .env
+```
 
-## Contributing
+Générez ensuite la clé de l'application :
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+``` bash
+php artisan key:generate
+```
 
-## Code of Conduct
+### 4. Base de données
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Ouvrez votre fichier `.env` et configurez vos accès à la base de données
+:
 
-## Security Vulnerabilities
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=auth_api
+    DB_USERNAME=root
+    DB_PASSWORD=
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Lancez ensuite les migrations pour créer les tables :
 
-## License
+``` bash
+php artisan migrate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+*(Note : Si vous utilisez Docker avec Laravel Sail, vous pouvez
+simplement lancer `./vendor/bin/sail up -d` puis
+`./vendor/bin/sail artisan migrate`).*
+
+------------------------------------------------------------------------
+
+## 📚 Documentation de l'API
+
+L'API est intégralement documentée via une collection Postman. Un
+développeur n'ayant pas lu le code peut tester l'ensemble des routes
+uniquement grâce à ce fichier.
+
+### Comment utiliser la documentation :
+
+1.  Téléchargez le fichier de collection situé à la racine du projet :\
+    `Docs/Auth_API.postman_collection.json`
+
+2.  Ouvrez **Postman**, cliquez sur **Import** (en haut à gauche) et
+    sélectionnez le fichier JSON.
+
+3.  Vous retrouverez toutes les requêtes préconfigurées avec :
+
+    -   Les **Headers** (`Accept: application/json`)
+    -   Les **Body d'exemple**
+    -   Les **descriptions des réponses HTTP**
+
+------------------------------------------------------------------------
+
+## 🔐 Authentification (Bearer Token)
+
+L'API utilise un système de token pour sécuriser les routes privées.
+
+1.  Utilisez la route **POST /api/login** avec des identifiants valides.
+2.  Récupérez le **token** dans la réponse JSON.
+3.  Pour toutes les routes protégées, incluez ce token dans l'en-tête
+    HTTP :
+
+```{=html}
+<!-- -->
+```
+    Authorization: Bearer <votre_token>
+
+------------------------------------------------------------------------
+
+## 🛣️ Liste des Routes (Endpoints)
+
+### Authentification (Publique)
+
+  Méthode   Route           Description                          Statut Succès
+  --------- --------------- ------------------------------------ ---------------
+  POST      /api/register   Création d'un nouveau compte         201 Created
+  POST      /api/login      Connexion et récupération du token   200 OK
+
+### Gestion du Profil (Protégée 🔒)
+
+Si le token est absent ou invalide, l'API renvoie **401 Unauthorized**.
+
+  Méthode   Route              Description                           Statut Succès
+  --------- ------------------ ------------------------------------- ---------------
+  GET       /api/me            Consulter ses propres informations    200 OK
+  PUT       /api/me            Modifier son nom ou son email         200 OK
+  PUT       /api/me/password   Changer son mot de passe              200 OK
+  DELETE    /api/me            Supprimer définitivement son compte   200 OK
+  POST      /api/logout        Se déconnecter (invalide le token)    200 OK
+
+------------------------------------------------------------------------
+
+## 🧪 Scénario de Test Recommandé
+
+Pour vérifier le bon fonctionnement de l'API, suivez ce flux logique
+dans Postman :
+
+1.  Créez un compte via **/api/register**.
+2.  Connectez-vous avec **/api/login** pour obtenir un token.
+3.  Essayez **GET /api/me** sans token pour vérifier que l'accès est
+    refusé (**401**).
+4.  Refaites **GET /api/me** avec le token dans le header
+    **Authorization** (**200**).
+5.  Modifiez vos informations via **PUT /api/me**.
+6.  Modifiez votre mot de passe via **PUT /api/me/password** (testez
+    avec un mauvais mot de passe actuel pour vérifier l'erreur **422**).
+7.  Déconnectez-vous via **POST /api/logout**.
+8.  Tentez d'accéder à **/api/me** avec l'ancien token (doit échouer).
+
+------------------------------------------------------------------------
+
+## ✍️ Auteur
+
+**Oussama Ait Youss**
