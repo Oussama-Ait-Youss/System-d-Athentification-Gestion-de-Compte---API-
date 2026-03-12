@@ -1,0 +1,250 @@
+openapi: 3.0.0
+info:
+  title: API Authentification & Gestion de Compte
+  description: API Laravel pour la gestion d'identité utilisateur, la sécurisation des routes et la manipulation des données de profil.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Serveur de développement local
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum/JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Oussama
+        email:
+          type: string
+          format: email
+          example: oussama@example.com
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+paths:
+  /api/register:
+    post:
+      summary: Créer un compte
+      tags:
+        - Authentification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  example: Oussama
+                email:
+                  type: string
+                  format: email
+                  example: oussama@example.com
+                password:
+                  type: string
+                  format: password
+                  example: secret123
+      responses:
+        '201':
+          description: Inscription réussie
+          content:
+            application/json:
+              example:
+                message: "Account created successfully"
+        '422':
+          description: Erreur de validation (ex. email déjà pris)
+
+  /api/login:
+    post:
+      summary: Se connecter
+      tags:
+        - Authentification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: oussama@example.com
+                password:
+                  type: string
+                  format: password
+                  example: secret123
+      responses:
+        '200':
+          description: Connexion réussie
+          content:
+            application/json:
+              example:
+                message: "Login successful"
+                token: "1|abcdef1234567890..."
+        '401':
+          description: Email ou mot de passe incorrect
+          content:
+            application/json:
+              example:
+                message: "Invalid credentials"
+
+  /api/logout:
+    post:
+      summary: Se déconnecter
+      tags:
+        - Authentification
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Déconnexion réussie
+          content:
+            application/json:
+              example:
+                message: "Logout successful"
+        '401':
+          description: Token absent ou invalide
+          content:
+            application/json:
+              example:
+                message: "Unauthorized"
+
+  /api/me:
+    get:
+      summary: Consulter son propre profil
+      tags:
+        - Profil
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Profil récupéré
+          content:
+            application/json:
+              example:
+                message: "Profile fetched successfully"
+                user:
+                  id: 1
+                  name: "Oussama"
+                  email: "oussama@example.com"
+        '401':
+          description: Non autorisé
+          content:
+            application/json:
+              example:
+                message: "Unauthorized"
+    
+    put:
+      summary: Modifier ses informations
+      tags:
+        - Profil
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Oussama Dev"
+                email:
+                  type: string
+                  format: email
+                  example: "nouveau@example.com"
+      responses:
+        '200':
+          description: Profil modifié
+          content:
+            application/json:
+              example:
+                message: "Profile updated successfully"
+        '401':
+          description: Non autorisé
+        '422':
+          description: Erreur de validation (ex. email déjà pris)
+
+    delete:
+      summary: Supprimer son compte
+      tags:
+        - Profil
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Compte supprimé
+          content:
+            application/json:
+              example:
+                message: "Account deleted successfully"
+        '401':
+          description: Non autorisé
+
+  /api/me/password:
+    put:
+      summary: Changer son mot de passe
+      tags:
+        - Profil
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - current_password
+                - new_password
+                - new_password_confirmation
+              properties:
+                current_password:
+                  type: string
+                  format: password
+                  example: "secret123"
+                new_password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  example: "nouveauSecret456"
+                new_password_confirmation:
+                  type: string
+                  format: password
+                  example: "nouveauSecret456"
+      responses:
+        '200':
+          description: Changement réussi
+          content:
+            application/json:
+              example:
+                message: "Password updated successfully"
+        '401':
+          description: Non autorisé
+        '422':
+          description: Mot de passe actuel incorrect ou validation échouée
+          content:
+            application/json:
+              example:
+                message: "Current password is incorrect"
